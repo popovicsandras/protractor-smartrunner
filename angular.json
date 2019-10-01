@@ -115,11 +115,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "protractor-lazyrun:serve"
+            "devServerTarget": ""
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "protractor-lazyrun:serve:production"
+            "dev-server": {
+              "devServerTarget": "protractor-lazyrun:serve"
             }
           }
         }

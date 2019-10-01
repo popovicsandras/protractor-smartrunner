@@ -21,9 +21,9 @@ exports.config = {
         defaultTimeoutInterval: 30000,
         print: function () { }
     },
-    plugins: [{
-        path: ''
-    }],
+    // plugins: [{
+    //     path: ''
+    // }],
     onPrepare() {
         require('ts-node').register({
             project: require('path').join(__dirname, './tsconfig.json')

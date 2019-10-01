@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "newProjectRoot": "",
   "projects": {
     "protractor-lazyrun": {
       "projectType": "application",
@@ -10,34 +10,32 @@
           "style": "scss"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
+      "root": "apps/protractor-lazyrun",
+      "sourceRoot": "apps/protractor-lazyrun/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/protractor-lazyrun",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "outputPath": "dist/apps/protractor-lazyrun",
+            "index": "apps/protractor-lazyrun/src/index.html",
+            "main": "apps/protractor-lazyrun/src/main.ts",
+            "polyfills": "apps/protractor-lazyrun/src/polyfills.ts",
+            "tsConfig": "apps/protractor-lazyrun/tsconfig.app.json",
             "aot": false,
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "apps/protractor-lazyrun/src/favicon.ico",
+              "apps/protractor-lazyrun/src/assets"
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["apps/protractor-lazyrun/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "apps/protractor-lazyrun/src/environments/environment.ts",
+                  "with": "apps/protractor-lazyrun/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -84,17 +82,15 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
+            "main": "apps/protractor-lazyrun/src/test.ts",
+            "polyfills": "apps/protractor-lazyrun/src/polyfills.ts",
+            "tsConfig": "apps/protractor-lazyrun/tsconfig.spec.json",
+            "karmaConfig": "apps/protractor-lazyrun/karma.conf.js",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "apps/protractor-lazyrun/src/favicon.ico",
+              "apps/protractor-lazyrun/src/assets"
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["apps/protractor-lazyrun/src/styles.scss"],
             "scripts": []
           }
         },
@@ -102,19 +98,22 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
+              "apps/protractor-lazyrun/tsconfig.app.json",
+              "apps/protractor-lazyrun/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
-        },
+        }
+      }
+    },
+    "protractor-lazyrun-e2e": {
+      "projectType": "application",
+      "root": "apps/protractor-lazyrun-e2e",
+      "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.ts",
+            "protractorConfig": "apps/protractor-lazyrun-e2e/protractor.conf.ts",
             "devServerTarget": ""
           },
           "configurations": {
@@ -122,8 +121,19 @@
               "devServerTarget": "protractor-lazyrun:serve"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/protractor-lazyrun-e2e/tsconfig.json",
+            "exclude": ["**/node_modules/**"]
+          }
         }
       }
-    }},
-  "defaultProject": "protractor-lazyrun"
+    }
+  },
+  "defaultProject": "protractor-lazyrun",
+  "cli": {
+    "defaultCollection": "@nrwl/node"
+  }
 }

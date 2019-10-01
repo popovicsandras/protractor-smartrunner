@@ -21,9 +21,11 @@ exports.config = {
         defaultTimeoutInterval: 30000,
         print: function () { }
     },
+
     plugins: [{
-        path: ''
+        path: '../plugins/lazyrun'
     }],
+
     onPrepare() {
         require('ts-node').register({
             project: require('path').join(__dirname, './tsconfig.json')

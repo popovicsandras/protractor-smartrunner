@@ -1,8 +1,8 @@
 {
   "name": "protractor-lazyrun",
   "version": "0.0.1",
-  "description": "Protractor lazyrun package",
-  "main": "index.js",
+  "description": "Protractor plugin for rerunning broken, flaky test and only those which failed",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +16,11 @@
     "rerun",
     "flaky",
     "tests"
+  ],
+  "files": [
+    "lib",
+    "package.json",
+    "README.md"
   ],
   "author": "Andras Popovics",
   "license": "ISC",

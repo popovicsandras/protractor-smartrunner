@@ -1,0 +1,26 @@
+{
+  "name": "protractor-lazyrun",
+  "version": "0.0.1",
+  "description": "Protractor lazyrun package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/popovicsandras/protractor-lazyrun.git"
+  },
+  "keywords": [
+    "protractor",
+    "lazy",
+    "rerun",
+    "flaky",
+    "tests"
+  ],
+  "author": "Andras Popovics",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/popovicsandras/protractor-lazyrun/issues"
+  },
+  "homepage": "https://github.com/popovicsandras/protractor-lazyrun#readme"
+}

@@ -1,5 +1,5 @@
 {
-  "name": "protractor-lazyrun",
+  "name": "protractor-smartrunner",
   "version": "0.0.1",
   "description": "Protractor plugin for rerunning broken, flaky test and only those which failed",
   "main": "lib/index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/popovicsandras/protractor-lazyrun.git"
+    "url": "git+https://github.com/popovicsandras/protractor-smartrunner.git"
   },
   "keywords": [
     "protractor",
@@ -25,7 +25,7 @@
   "author": "Andras Popovics",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/popovicsandras/protractor-lazyrun/issues"
+    "url": "https://github.com/popovicsandras/protractor-smartrunner/issues"
   },
-  "homepage": "https://github.com/popovicsandras/protractor-lazyrun#readme"
+  "homepage": "https://github.com/popovicsandras/protractor-smartrunner#readme"
 }

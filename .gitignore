@@ -7,7 +7,7 @@
 # Only exists if Bazel was run
 /bazel-out
 protractorFailuresReport
-.protractor-lazy-run*
+.protractor-smartrunner*
 plugins/**/lib
 
 # dependencies

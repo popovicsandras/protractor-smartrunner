@@ -3,7 +3,7 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
-// const retry = require('protractor-retry').retry;
+const retry = require('protractor-retry').retry;
 const SmartRunner = require('../plugins/smartrunner');
 
 exports.config = {
@@ -40,14 +40,14 @@ exports.config = {
             project: require('path').join(__dirname, './tsconfig.json')
         });
         jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
-        // retry.onPrepare();
+        retry.onPrepare();
     },
 
     onCleanUp(results, files) {
-        // retry.onCleanUp(results);
+        retry.onCleanUp(results);
     },
 
     afterLaunch() {
-        // return retry.afterLaunch(3);
+        return retry.afterLaunch(3);
     }
 };

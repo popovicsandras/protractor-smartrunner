@@ -22,7 +22,7 @@ export class SmartRunnerResults {
 
     constructor(outputDirectory: string, repoHash: string) {
         this.affectedSuites = {};
-        this.smartRunDir = resolve(`${outputDirectory.replace(/\/*$/, '')}-${repoHash}`);
+        this.smartRunDir = resolve(outputDirectory, repoHash);
         fs.ensureDirSync(this.smartRunDir);
     }
 

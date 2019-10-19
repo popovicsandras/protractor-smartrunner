@@ -1,7 +1,7 @@
-import { AppPage } from './app.po';
+import { AppPage } from './pages/app.po';
 import { browser, logging } from 'protractor';
 
-describe('workspace-project App', () => {
+describe('Suite with special characters in it ~\';:"|!@£$%^&*()¡€#¢∞§¶•ªº', () => {
     let page: AppPage;
 
     beforeEach(() => {
@@ -9,11 +9,11 @@ describe('workspace-project App', () => {
     });
 
     const expectations = [ true, true, true, true, true, true, true, true, true, true ];
+
     for (let i = 0; i < 10; i++) {
         it(`should test scenario ${i}`, () => {
             page.navigateTo();
-            // browser.sleep(4000);
-            expect(true).toEqual(expectations[i]);
+            expect(expectations[i]).toEqual(true);
         });
     }
 

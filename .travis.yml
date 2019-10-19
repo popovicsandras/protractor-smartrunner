@@ -20,12 +20,15 @@ before_install:
     - sh -e /etc/init.d/xvfb start
     - sleep 3 # give xvfb some time to start
 
+after_install:
+    - ./node_modules/protractor/bin/webdriver-manager update --gecko=false
+
 jobs:
     include:
         - stage: "Protractor tests"
           script:
           - npm run build:plugin
-          - ./node_modules/protractor/bin/protractor ./e2e/protractor.conf.ts
+          - ./node_modules/protractor/bin/protractor ./e2e/protractor.conf.ts || exit 1
 
 cache:
   directories:

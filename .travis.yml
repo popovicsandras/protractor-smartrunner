@@ -24,7 +24,8 @@ jobs:
     include:
         - stage: "Protractor tests"
           script:
-          - ./node_modules/protractor/bin/protractor e2e/protractor.conf.ts
+          - npm run build:plugin
+          - ./node_modules/protractor/bin/protractor ./e2e/protractor.conf.ts
 
 cache:
   directories:

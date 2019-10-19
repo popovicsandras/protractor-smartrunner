@@ -20,9 +20,9 @@ export class SmartRunnerResults {
     private results!: SuiteResults;
     private affectedSuites: SuiteUpdateFlags;
 
-    constructor(private threadId: number | string, resultsDir: string) {
+    constructor(outputDirectory: string, repoHash: string) {
         this.affectedSuites = {};
-        this.smartRunDir = resolve(process.cwd(), resultsDir);
+        this.smartRunDir = resolve(`${outputDirectory.replace(/\/*$/, '')}-${repoHash}`);
         fs.ensureDirSync(this.smartRunDir);
     }
 

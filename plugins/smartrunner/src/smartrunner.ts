@@ -2,24 +2,23 @@ import { SmartRunnerResults } from './smartrunner-results';
 import { SmartRunnerReporter } from './smartrunner-reporter';
 
 export interface SmartRunnerOptions {
-    id: number | string;
-    resultsDir: string;
+    outputDirectory?: string;
+    repoHash: string;
 }
 
-const DEFAULT_OPTIONS: SmartRunnerOptions = {
-    id: 1,
-    resultsDir: './.protractor-smartrunner'
+const DEFAULT_OPTIONS = {
+    outputDirectory: './.protractor-smartrunner',
 };
 
 export class SmartRunner {
     private results!: SmartRunnerResults;
 
-    static apply(options: SmartRunnerOptions = { ...DEFAULT_OPTIONS  }): SmartRunner {
-        return new SmartRunner(options);
+    static apply(options: SmartRunnerOptions): SmartRunner {
+        return new SmartRunner({ ...DEFAULT_OPTIONS, ...options });
     }
 
-    private constructor(private options: SmartRunnerOptions) {
-        this.results = new SmartRunnerResults(this.options.id, this.options.resultsDir);
+    private constructor(private options: Required<SmartRunnerOptions>) {
+        this.results = new SmartRunnerResults(this.options.outputDirectory, this.options.repoHash);
         this.results.load();
         this.setupJasmine();
     }

@@ -36,7 +36,9 @@ exports.config = {
     },
 
     onPrepare() {
-        SmartRunner.apply();
+        SmartRunner.apply({
+            repoHash: process.env.GIT_HASH
+        });
         require('ts-node').register({
             project: require('path').join(__dirname, './tsconfig.json')
         });

@@ -1,15 +1,15 @@
 import { AppPage } from './pages/app.po';
 import { browser, logging } from 'protractor';
 
-describe('Suite 2', () => {
+describe('Suite 3 [skipped completly]', () => {
     let page: AppPage;
 
     beforeEach(() => {
         page = new AppPage();
     });
 
-    describe('level 1a', () => {
-        const expectations = [ true, false, true, true, true, true, true, true, true, true ];
+    xdescribe('level 1a', () => {
+        const expectations = [ true, true, true, false, true, true, true, true, true, true ];
         for (let i = 0; i < 10; i++) {
             it(`should test scenario ${i}`, () => {
                 page.navigateTo();
@@ -20,10 +20,17 @@ describe('Suite 2', () => {
     });
 
     describe('level 1b', () => {
+
+        xit(`should test scenario [skipped in code]`, () => {
+            page.navigateTo();
+            browser.sleep(4000);
+            expect(true).toEqual(false);
+        });
+
         describe('level 2', () => {
-            const expectations = [ true, true, false, true, true, true, true, true, true, true ];
+            const expectations = [ true, true, true, true, true, true, true, true, true, true ];
             for (let i = 0; i < 10; i++) {
-                it(`should test scenario ${i}`, () => {
+                xit(`should test scenario ${i}`, () => {
                     page.navigateTo();
                     browser.sleep(4000);
                     expect(true).toEqual(expectations[i]);

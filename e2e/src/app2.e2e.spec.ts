@@ -9,7 +9,7 @@ describe('workspace-project App 2', () => {
     });
 
     describe('level 1', () => {
-        const expectations = [ false, true, true, true, true, true, true, true, true, true ];
+        const expectations = [ true, true, true, true, true, true, true, true, true, true ];
         for (let i = 0; i < 10; i++) {
             it(`should test scenario ${i}`, () => {
                 page.navigateTo();
@@ -20,7 +20,7 @@ describe('workspace-project App 2', () => {
     });
 
     describe('level 2', () => {
-        const expectations = [ true, false, true, true, true, true, true, true, true, true ];
+        const expectations = [ true, true, true, true, true, true, true, true, true, true ];
         for (let i = 0; i < 10; i++) {
             it(`should test scenario ${i}`, () => {
                 page.navigateTo();

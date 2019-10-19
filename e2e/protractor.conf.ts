@@ -15,6 +15,7 @@ exports.config = {
 
         browserName: 'chrome',
         chromeOptions: {
+            binary: require('puppeteer').executablePath(),
             args: [
                 '--headless',
                 '--disable-gpu',

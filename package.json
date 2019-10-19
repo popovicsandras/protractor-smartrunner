@@ -50,6 +50,7 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "protractor": "~5.4.0",
     "protractor-retry": "^1.2.9",
+    "puppeteer": "^1.17.0",
     "ts-jest": "^24.1.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",

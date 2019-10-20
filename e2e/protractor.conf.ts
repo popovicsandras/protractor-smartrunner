@@ -4,7 +4,7 @@
 
 const { SpecReporter } = require('jasmine-spec-reporter');
 const retry = require('protractor-retry').retry;
-const SmartRunner = require('../plugins/smartrunner');
+const SmartRunner = require('../src/smartrunner');
 const fs = require('fs-extra');
 const resolve = require('path').resolve;
 

@@ -1,5 +1,6 @@
 import { AppPage } from './pages/app.po';
 import { browser, logging } from 'protractor';
+import { test } from './utils';
 
 describe('Suite 3 [skipped completly]', () => {
     let page: AppPage;
@@ -9,12 +10,10 @@ describe('Suite 3 [skipped completly]', () => {
     });
 
     xdescribe('level 1a', () => {
-        const expectations = [ true, true, true, false, true, true, true, true, true, true ];
+        const passForNthAttempt = [ 1, 1, 1, 1, 1, 2, 1, 1, 1, 1 ];
         for (let i = 0; i < 10; i++) {
             it(`should test scenario ${i}`, () => {
-                page.navigateTo();
-                browser.sleep(4000);
-                expect(true).toEqual(expectations[i]);
+                test(page, passForNthAttempt[i]);
             });
         }
     });
@@ -28,12 +27,10 @@ describe('Suite 3 [skipped completly]', () => {
         });
 
         describe('level 2', () => {
-            const expectations = [ true, true, true, true, true, true, true, true, true, true ];
+            const passForNthAttempt = [ 1, 2, 1, 1, 1, 1, 1, 1, 1, 2 ];
             for (let i = 0; i < 10; i++) {
                 xit(`should test scenario ${i}`, () => {
-                    page.navigateTo();
-                    browser.sleep(4000);
-                    expect(true).toEqual(expectations[i]);
+                    test(page, passForNthAttempt[i]);
                 });
             }
         });

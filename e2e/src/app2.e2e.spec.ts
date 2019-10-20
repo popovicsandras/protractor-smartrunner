@@ -1,5 +1,6 @@
 import { AppPage } from './pages/app.po';
 import { browser, logging } from 'protractor';
+import { test } from './utils';
 
 describe('Suite 2', () => {
     let page: AppPage;
@@ -9,24 +10,20 @@ describe('Suite 2', () => {
     });
 
     describe('level 1a', () => {
-        const expectations = [ true, false, true, true, true, true, true, true, true, true ];
+        const passForNthAttempt = [ 1, 1, 1, 1, 1, 2, 1, 1, 3, 1 ];
         for (let i = 0; i < 10; i++) {
             it(`should test scenario ${i}`, () => {
-                page.navigateTo();
-                browser.sleep(4000);
-                expect(true).toEqual(expectations[i]);
+                test(page, passForNthAttempt[i]);
             });
         }
     });
 
     describe('level 1b', () => {
         describe('level 2', () => {
-            const expectations = [ true, true, false, true, true, true, true, true, true, true ];
+            const passForNthAttempt = [ 1, 2, 1, 2, 1, 1, 1, 1, 1, 2 ];
             for (let i = 0; i < 10; i++) {
                 it(`should test scenario ${i}`, () => {
-                    page.navigateTo();
-                    browser.sleep(4000);
-                    expect(true).toEqual(expectations[i]);
+                    test(page, passForNthAttempt[i]);
                 });
             }
         });

@@ -1,5 +1,6 @@
 import { AppPage } from './pages/app.po';
 import { browser, logging } from 'protractor';
+import { test } from './utils';
 
 describe('Suite 1:/ with special characters in it ~\';:"|!@£$%^&*()¡€#¢∞§¶•ªº', () => {
     let page: AppPage;
@@ -8,13 +9,11 @@ describe('Suite 1:/ with special characters in it ~\';:"|!@£$%^&*()¡€#¢∞�
         page = new AppPage();
     });
 
-    const expectations = [ false, true, true, true, true, true, true, true, true, true ];
+    const passForNthAttempt = [ 1, 1, 1, 3, 1, 1, 2, 1, 1, 4 ];
 
     for (let i = 0; i < 10; i++) {
         it(`should test scenario ${i}`, () => {
-            page.navigateTo();
-            browser.sleep(4000);
-            expect(expectations[i]).toEqual(true);
+            test(page, passForNthAttempt[i]);
         });
     }
 

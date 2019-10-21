@@ -20,7 +20,7 @@ jobs:
       env:
         CI: true
     - name: Publish to npm
-      run: npm publish
+      run: cd ./src/smartrunner && npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       

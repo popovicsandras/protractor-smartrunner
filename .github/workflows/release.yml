@@ -13,9 +13,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-    - name: npm install, build plugin and release
+    - name: Build plugin
       run: |
         npm ci
         npm run build:plugin --if-present
       env:
         CI: true
+    - name: Publish to npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      

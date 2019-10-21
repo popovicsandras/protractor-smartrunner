@@ -14,7 +14,7 @@ export class SmartRunnerReporter {
         const specName = result.description;
         const suiteName = result.fullName.replace(specName, '').trim();
         if (result.status !== 'disabled') {
-            this.results.set(suiteName, specName, result.status === 'passed');
+            this.results.set(suiteName, specName, result.status === 'passed' || result.status === 'pending');
         }
     }
 

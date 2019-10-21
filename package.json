@@ -1,6 +1,6 @@
 {
-  "name": "protractor-lazyrun",
-  "version": "0.0.0",
+  "name": "protractor-smartrunner",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,7 +11,7 @@
     "e2e": "ng e2e",
     "pree2e:dev-server": "npm run pree2e",
     "e2e:dev-server": "ng e2e --configuration=\"dev-server\"",
-    "build:plugin": "tsc --project ./plugins/smartrunner"
+    "build:plugin": "tsc --project ./src/smartrunner"
   },
   "private": true,
   "dependencies": {
@@ -48,8 +48,10 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "lite-server": "^2.5.4",
     "protractor": "~5.4.0",
     "protractor-retry": "^1.2.9",
+    "puppeteer": "1.19.0",
     "ts-jest": "^24.1.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",

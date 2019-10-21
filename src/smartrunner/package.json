@@ -27,5 +27,9 @@
   "bugs": {
     "url": "https://github.com/popovicsandras/protractor-smartrunner/issues"
   },
-  "homepage": "https://github.com/popovicsandras/protractor-smartrunner#readme"
+  "homepage": "https://github.com/popovicsandras/protractor-smartrunner#readme",
+  "dependencies": {
+    "filenamify": "4.1.0",
+    "fs-extra": "8.1.0"
+  }
 }

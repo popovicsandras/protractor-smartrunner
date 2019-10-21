@@ -1,21 +1,21 @@
 {
   "name": "protractor-smartrunner",
   "version": "0.0.1",
-  "description": "Protractor plugin for rerunning broken, flaky test and only those which failed",
+  "description": "Protractor utility for keeping track of passed/failed tests between runs. Works together with protractor-retry.",
   "main": "lib/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/popovicsandras/protractor-smartrunner.git"
   },
   "keywords": [
     "protractor",
-    "lazy",
+    "smartrunner",
     "rerun",
     "flaky",
-    "tests"
+    "tests",
+    "retry",
+    "e2e",
+    "automation"
   ],
   "files": [
     "lib",

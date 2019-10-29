@@ -8,9 +8,9 @@
     "test": "jest",
     "lint": "ng lint",
     "pree2e": "npm run build:plugin",
-    "e2e": "ng e2e",
+    "e2e": "export GIT_HASH=`git rev-parse HEAD` && protractor ./e2e/protractor.conf.ts",
     "pree2e:dev-server": "npm run pree2e",
-    "e2e:dev-server": "ng e2e --configuration=\"dev-server\"",
+    "e2e:dev-server": "protractor ./e2e/protractor.conf.ts --configuration=\"dev-server\"",
     "build:plugin": "tsc --project ./src/smartrunner"
   },
   "private": true,

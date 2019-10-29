@@ -12,10 +12,22 @@ describe('Suite 1:/ with special characters in it ~\';:"|!@£$%^&*()¡€#¢∞�
     const passForNthAttempt = [ 1, 1, 1, 3, 1, 1, 2, 1, 1, 4 ];
 
     for (let i = 0; i < 10; i++) {
-        it(`should test scenario ${i}`, () => {
+        it(`[C${i}] should test scenario ${i}`, () => {
             test(page, passForNthAttempt[i]);
         });
     }
+
+    it('[C123456] never passes', () => {
+        expect(false).toBe(true);
+    });
+
+    it('[C789012] never passes', () => {
+        expect(false).toBe(true);
+    });
+
+    it('[C345678] always passes', () => {
+        expect(true).toBe(true);
+    });
 
     afterEach(async () => {
         // Assert that there are no errors emitted from the browser

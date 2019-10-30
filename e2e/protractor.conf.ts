@@ -45,7 +45,8 @@ exports.config = {
     jasmineNodeOpts: {
         showColors: true,
         defaultTimeoutInterval: 30000,
-        print: () => {}
+        print: () => {},
+        ...SmartRunner.withOptionalExclusions(resolve(__dirname, 'protractor.excludes.json'))
     },
 
     onPrepare() {

@@ -1,5 +1,6 @@
 import { SmartRunnerResults } from './smartrunner-results';
 import { SmartRunnerReporter } from './smartrunner-reporter';
+const fs = require('fs-extra');
 
 export interface SmartRunnerOptions {
     outputDirectory?: string;
@@ -17,6 +18,18 @@ export class SmartRunner {
         return new SmartRunner({ ...DEFAULT_OPTIONS, ...options });
     }
 
+    static withOptionalExclusions(filePath: string) {
+        const cliGrepped = process.argv.some((argument) => /^-g=/.test(argument) || /^--grep=/.test(argument));
+        if (!cliGrepped && fs.existsSync(filePath)) {
+            return {
+                grep: Object.keys(require(filePath)).join('|'),
+                invertGrep: true
+            };
+        }
+
+        return {};
+    }
+
     private constructor(private options: Required<SmartRunnerOptions>) {
         this.results = new SmartRunnerResults(this.options.outputDirectory, this.options.repoHash);
         this.results.load();
@@ -25,12 +38,14 @@ export class SmartRunner {
 
     private setupJasmine() {
         jasmine.getEnv().addReporter(new SmartRunnerReporter(this.results));
+        const oldSpecFilter = jasmine.getEnv().specFilter;
+
         jasmine.getEnv().specFilter = (spec) => {
             const testName = spec.getResult().description;
             const suiteName = spec.getFullName().replace(testName, '').trim();
 
             const testPassedInPreviousRun = this.results.get(suiteName, testName);
-            return !testPassedInPreviousRun;
+            return !testPassedInPreviousRun && oldSpecFilter(spec);
         };
     }
 }

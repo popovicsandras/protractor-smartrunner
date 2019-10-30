@@ -1,13 +1,8 @@
 # Protractor Smartrunner
 
-Protractor utility for keeping track of passed/failed tests between runs. Works together with [protractor-retry](https://www.npmjs.com/package/protractor-retry).
-
-This extension records the status (`passed` or `failed`) of every test run, and stores it in the filesystem.
-After the first run, during every subsequent protractor execution, it only lets the failed tests to run, every previously passed tests will be skipped. 
-
-This can be particularly handy and performant, if you happen to have flaky tests, or you know that some of your tests might have failed, not because of your changeset, but e.g.: lack, shortage or bug in the related BE services. This way, fixing the BE, you can rerun only those tests which failed.
-
-Obviously, if you change something in your code (new changeset), it makes sense to rerun all of the tests, not just the previously failed ones. That is why, the **protractor-smartrunner** is bound to your codebase snapshot identifier (`repoHash`), which in case of git, make sense to be the hash of your current `HEAD`.
+Protractor utility features for having more configuration over spec filtering, like:
+1. [Keeping track of passed/failed tests between runs](#1-record-status-of-test-runs) (works together with [protractor-retry](https://www.npmjs.com/package/protractor-retry)).
+2. [Having an exclusion file containing the name of temporary disabled specs.](#2-spec-exclusions)
 
 ## Installation
 
@@ -15,16 +10,27 @@ Obviously, if you change something in your code (new changeset), it makes sense 
 npm install --save-dev protractor-smartrunner
 ```
 
-## Prerequisites
+## Features 
 
-The utility has one mandatory parameter: `repoHash`. This is the identifier of the codebase snapshot, e.g.: in case of git, it can be the HEAD's hash.
+### 1. Record status of test runs
+
+This feature records the status (`passed` or `failed`) of every test run, and stores it in the filesystem.
+After the first run, during every subsequent protractor execution, it only lets the failed tests to run, every previously passed tests will be skipped. 
+
+This can be particularly handy and performant in CI environments, if you happen to have flaky tests, or you know that some of your tests might have failed, not because of your changeset, but e.g.: lack of, shortage of or bug in the related BE services. This way, fixing the BE, you can rerun only those tests which failed.
+
+Obviously, if you change something in your code (new changeset), it makes sense to rerun all of the tests, not just the previously failed ones. That is why, the **protractor-smartrunner** is bound to your codebase snapshot identifier (`repoHash`), which in case of git, make sense to be the hash of your current `HEAD`.
+
+#### Prerequisites
+
+The feature has one mandatory parameter: `repoHash`. This is the identifier of the codebase snapshot, e.g.: in case of git, it can be the HEAD's hash.
 Before starting protractor, in case of Unix, you can export this variable to be accessible in the `protractor.conf.js` file.
 
 ```bash
 export GIT_HASH=`git rev-parse HEAD`
 ```
 
-## Usage
+#### Usage
 
 Add the following snippets to your protractor configuration file:
 
@@ -45,7 +51,7 @@ exports.config = {
 };
 ```
 
-### Options
+##### Options
 
 Smartrunner accepts the following configuration options:
 
@@ -56,7 +62,7 @@ interface SmartRunnerOptions {
 }
 ```
 
-## Usage with protractor-retry
+#### Usage with protractor-retry
 
 ```js
 const retry = require('protractor-retry').retry;
@@ -87,11 +93,11 @@ exports.config = {
 };
 ```
 
-## CI integration
+#### CI integration
 
 The test results are stored in the following directory by default: `.protractor-smartrunner` (can be configured, see [options](#options)). To be able to store the results between test runs, you may need to cache this directory in your CI pipeline.
 
-### Travis
+##### Travis
 With Tavis, you can do this with the cache option in your `.travis.yml` file:
 
 ```yml
@@ -100,3 +106,46 @@ cache:
   - node_modules
   - .protractor-smartrunner
 ```
+
+### 2. Spec exclusions
+
+With this feature, one is able to list specs by their name in a separate file to exclude them. When there is a spec failure unrelated to the current changeset, it can be excluded this way, keeping track of the skipped tests in an isolated way and having this information in one place (compared to the `xit`-ed specs scattered accross the whole e2e codebase).
+
+> ___
+> This feature uses protractor's `jasmineNodeOpts.grep` and `jasmineNodeOpts.invertGrep: true` in the background. However if you run protractor with the `-g`/`--grep` cli arguments, those cli arguments takes precedence over what you have in the exclusion file.
+> ___
+
+The spec exclusion file is a one level depth dictionary json, where the keys are the grep pattern to exclude, like this:
+
+#### Exclusion file
+
+```json
+// Content of protractor.excludes.json (filename can be anything)
+{
+    "C123456": "A reason or other bug tracking system issue number",
+    "C789012": "Another reason or other bug tracking system issue number"
+}
+```
+
+For the functionality, the only important thing is the keys in the object. The value can be anything, which might be helpful for QA engineers to understand the reason why the test was excluded.
+
+#### Adding configuration to protractor
+
+```js
+const SmartRunner = require('protractor-smartrunner');
+const resolve = require('path').resolve;
+
+exports.config = {
+    ...
+    
+    jasmineNodeOpts: {
+        showColors: true,
+        defaultTimeoutInterval: 30000,
+        print: () => {},
+        ...SmartRunner.withOptionalExclusions(
+            resolve(__dirname, 'protractor.excludes.json')
+        )
+    },
+
+    ...
+};

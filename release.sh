@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-VERSION="";
+VERSION="patch";
 
 show_help() {
     echo "Usage: release.sh -v|--version <patch|minor|major|semver>"

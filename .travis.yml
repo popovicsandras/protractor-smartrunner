@@ -18,8 +18,7 @@ before_install:
 jobs:
     include:
         - stage: "Protractor tests"
-          script:
-          - ./start.sh
+          script: npm run ci
 
 cache:
   directories:

@@ -9,7 +9,7 @@ describe('Suite for empty exclusion file', () => {
         page = new AppPage();
     });
 
-    const passForNthAttempt = [ 2, 1, 1, 1, 1, 1, 1, 1, 1, 1 ];
+    const passForNthAttempt = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ];
 
     for (let i = 0; i < 10; i++) {
         it(`[C${i}] should test scenario ${i}`, () => {

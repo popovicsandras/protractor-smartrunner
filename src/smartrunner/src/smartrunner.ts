@@ -21,10 +21,14 @@ export class SmartRunner {
     static withOptionalExclusions(filePath: string) {
         const cliGrepped = process.argv.some((argument) => /^-g=/.test(argument) || /^--grep=/.test(argument));
         if (!cliGrepped && fs.existsSync(filePath)) {
-            return {
-                grep: Object.keys(require(filePath)).join('|'),
-                invertGrep: true
-            };
+            const exclusions = Object.keys(require(filePath));
+
+            if (exclusions.length) {
+                return {
+                    grep: exclusions.join('|'),
+                    invertGrep: true
+                };
+            }
         }
 
         return {};

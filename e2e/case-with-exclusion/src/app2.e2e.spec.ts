@@ -1,16 +1,16 @@
-import { AppPage } from './pages/app.po';
+import { AppPage } from '../../pages/app.po';
 import { browser, logging } from 'protractor';
-import { test } from './utils';
+import { test } from '../../utils/utils';
 
-describe('Suite 3 [skipped completly]', () => {
+describe('Suite 2', () => {
     let page: AppPage;
 
     beforeEach(() => {
         page = new AppPage();
     });
 
-    xdescribe('level 1a', () => {
-        const passForNthAttempt = [ 1, 1, 1, 1, 1, 2, 1, 1, 1, 1 ];
+    describe('level 1a', () => {
+        const passForNthAttempt = [ 1, 1, 1, 1, 1, 2, 1, 1, 3, 1 ];
         for (let i = 0; i < 10; i++) {
             it(`should test scenario ${i}`, () => {
                 test(page, passForNthAttempt[i]);
@@ -19,17 +19,10 @@ describe('Suite 3 [skipped completly]', () => {
     });
 
     describe('level 1b', () => {
-
-        xit(`should test scenario [skipped in code]`, () => {
-            page.navigateTo();
-            browser.sleep(4000);
-            expect(true).toEqual(false);
-        });
-
         describe('level 2', () => {
-            const passForNthAttempt = [ 1, 2, 1, 1, 1, 1, 1, 1, 1, 2 ];
+            const passForNthAttempt = [ 1, 2, 1, 2, 1, 1, 1, 1, 1, 2 ];
             for (let i = 0; i < 10; i++) {
-                xit(`should test scenario ${i}`, () => {
+                it(`should test scenario ${i}`, () => {
                     test(page, passForNthAttempt[i]);
                 });
             }

@@ -5,13 +5,14 @@
     "postinstall": "webdriver-manager update --gecko=false --versions.chrome=$npm_package_config_chromeDriver",
     "ng": "ng",
     "start": "ng serve",
+    "ci": "./ci.sh",
     "build": "ng build",
     "test": "jest",
     "lint": "ng lint",
     "pree2e": "npm run build:plugin",
-    "e2e": "export GIT_HASH=`git rev-parse HEAD` && protractor ./e2e/protractor.conf.ts",
-    "pree2e:dev-server": "npm run pree2e",
-    "e2e:dev-server": "protractor ./e2e/protractor.conf.ts --configuration=\"dev-server\"",
+    "e2e:exclusion": "protractor ./e2e/case-with-exclusion/protractor.conf.ts",
+    "e2e:empty-exclusion": "protractor ./e2e/case-with-empty-exclusion/protractor.conf.ts",
+    "e2e": "export GIT_HASH=`git rev-parse HEAD` && npm run e2e:exclusion && npm run e2e:empty-exclusion",
     "build:plugin": "tsc --project ./src/smartrunner"
   },
   "config": {

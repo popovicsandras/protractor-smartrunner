@@ -1,4 +1,5 @@
 import { resolve } from 'path';
+import { red } from 'chalk';
 const fs = require('fs-extra');
 const filenamify = require('filenamify');
 
@@ -23,13 +24,8 @@ export class SmartRunnerResults {
     constructor(outputDirectory: string, repoHash: string) {
         this.affectedSuites = {};
 
-        if (!outputDirectory?.length) {
-            console.error('outputDirectory is not defined, terminating...')
-            process.exit(1);
-        }
-
         if (!repoHash?.length) {
-            console.error('repoHash is not defined, terminating...')
+            console.log(red('ERROR: repoHash is not defined, terminating...'));
             process.exit(1);
         }
 

@@ -9,6 +9,7 @@ git:
 branches:
   only:
   - master
+  - next
 
 before_install:
     - export DISPLAY=:99.0

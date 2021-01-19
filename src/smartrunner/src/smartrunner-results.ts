@@ -22,6 +22,17 @@ export class SmartRunnerResults {
 
     constructor(outputDirectory: string, repoHash: string) {
         this.affectedSuites = {};
+
+        if (!outputDirectory?.length) {
+            console.error('outputDirectory is not defined, terminating...')
+            process.exit(1);
+        }
+
+        if (!repoHash?.length) {
+            console.error('repoHash is not defined, terminating...')
+            process.exit(1);
+        }
+
         this.smartRunDir = resolve(outputDirectory, repoHash);
         fs.ensureDirSync(this.smartRunDir);
     }
@@ -51,7 +62,7 @@ export class SmartRunnerResults {
             if (updatedSuiteNames.indexOf(suite) !== -1) {
                 console.log(`Suite (${suite}) was affected by this thread, writing to filesystem.`);
                 const fileName = resolve(this.smartRunDir, filenamify(`./${suite}.json`));
-                fs.outputJsonSync(fileName, { [suite]: this.results[suite] });
+                fs.outputJsonSync(fileName, { [suite]: this.results[suite] }, { spaces: 4 });
             }
         }
     }

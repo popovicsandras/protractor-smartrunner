@@ -84,8 +84,9 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.ts",
-            "devServerTarget": ""
+            "protractorConfig": "e2e/case-with-exclusion/protractor.conf.ts",
+            "devServerTarget": "",
+            "webdriverUpdate": false
           },
           "configurations": {
             "dev-server": {

@@ -37,6 +37,7 @@ exports.config = {
     directConnect: true,
     baseUrl: 'http://localhost:4200/',
     framework: 'jasmine',
+    // resultJsonOutputFile: '123456.json',
 
     params: {
         attemptCount: attempts.count

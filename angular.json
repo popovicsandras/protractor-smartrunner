@@ -22,7 +22,7 @@
             "main": "testapp/main.ts",
             "polyfills": "testapp/polyfills.ts",
             "tsConfig": "testapp/tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "testapp/favicon.ico",
               "testapp/assets"
@@ -45,7 +45,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,

@@ -10,9 +10,9 @@
     "test": "jest",
     "lint": "ng lint",
     "pree2e": "npm run build:plugin",
-    "e2e:exclusion": "protractor ./e2e/case-with-exclusion/protractor.conf.ts",
-    "e2e:empty-exclusion": "protractor ./e2e/case-with-empty-exclusion/protractor.conf.ts",
-    "e2e": "export GIT_HASH=`git rev-parse HEAD` && npm run e2e:exclusion && npm run e2e:empty-exclusion",
+    "e2e:exclusion": "export GIT_HASH=`git rev-parse HEAD` && protractor ./e2e/case-with-exclusion/protractor.conf.ts",
+    "e2e:empty-exclusion": "export GIT_HASH=`git rev-parse HEAD` && protractor ./e2e/case-with-empty-exclusion/protractor.conf.ts",
+    "e2e": "npm run e2e:exclusion && npm run e2e:empty-exclusion",
     "ng-e2e": "export GIT_HASH=`git rev-parse HEAD` && ng e2e --configuration=dev-server",
     "build:plugin": "tsc --project ./src/smartrunner"
   },
@@ -58,7 +58,7 @@
     "puppeteer": "1.20.0",
     "rxjs": "~6.6.3",
     "ts-jest": "^24.1.0",
-    "ts-node": "~7.0.0",
+    "ts-node": "^7.0.1",
     "tslint": "~6.1.0",
     "typescript": "4.0.5",
     "zone.js": "~0.10.2"

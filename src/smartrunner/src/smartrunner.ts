@@ -49,7 +49,7 @@ export class SmartRunner {
             const suiteName = spec.getFullName().replace(testName, '').trim();
 
             const testPassedInPreviousRun = this.results.get(suiteName, testName);
-            return !testPassedInPreviousRun && oldSpecFilter(spec);
+            return !testPassedInPreviousRun.passed && oldSpecFilter(spec);
         };
     }
 }

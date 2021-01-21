@@ -3,8 +3,14 @@ import { red } from 'chalk';
 const fs = require('fs-extra');
 const filenamify = require('filenamify');
 
+export interface TestResult {
+    retries: number;
+    passed: boolean;
+    duration: number;
+}
+
 export interface TestResults {
-    [ testName: string ]: boolean;
+    [ testName: string ]: TestResult;
 }
 
 export interface SuiteResults {
@@ -39,16 +45,20 @@ export class SmartRunnerResults {
             .reduce((accumulator: SuiteResults, currentValue: SuiteResults) => ({ ...accumulator, ...currentValue }), {});
     }
 
-    set(suiteName: string, testName: string, passed: boolean) {
+    set(suiteName: string, testName: string, passed: boolean, duration: number) {
         if (!this.results[suiteName]) {
             this.results[suiteName] = {};
         }
-        this.results[suiteName][testName] = passed;
+        this.results[suiteName][testName] = {
+            retries: this.results?.[suiteName]?.[testName]?.retries + 1 || 0,
+            passed,
+            duration
+        };
         this.affectedSuites[suiteName] = true;
     }
 
-    get(suiteName: string, testName: string): boolean {
-        return this.results[suiteName] && this.results[suiteName][testName] || false;
+    get(suiteName: string, testName: string): TestResult {
+        return this.results[suiteName] && this.results[suiteName][testName] || {};
     }
 
     save() {

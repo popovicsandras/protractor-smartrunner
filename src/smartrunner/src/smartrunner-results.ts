@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { red } from 'chalk';
+import { Logger } from 'protractor/built/logger';
 const fs = require('fs-extra');
 const filenamify = require('filenamify');
 
@@ -27,11 +27,11 @@ export class SmartRunnerResults {
     private results!: SuiteResults;
     private affectedSuites: SuiteUpdateFlags;
 
-    constructor(outputDirectory: string, repoHash: string) {
+    constructor(outputDirectory: string, repoHash: string, private logger: Logger) {
         this.affectedSuites = {};
 
         if (!repoHash?.length) {
-            console.log(red('ERROR: repoHash is not defined, terminating...'));
+            this.logger.error('🛑 ERROR: repoHash is not defined, terminating...');
             process.exit(1);
         }
 
@@ -66,7 +66,7 @@ export class SmartRunnerResults {
         const suites = Object.keys(this.results);
         for (const suite of suites) {
             if (updatedSuiteNames.indexOf(suite) !== -1) {
-                console.log(`Suite (${suite}) was affected by this thread, writing to filesystem.`);
+                this.logger.info(`ℹ️  Suite (${suite}) was affected by this thread, writing to filesystem.`);
                 const fileName = resolve(this.smartRunDir, filenamify(`./${suite}.json`));
                 fs.outputJsonSync(fileName, { [suite]: this.results[suite] }, { spaces: 4 });
             }

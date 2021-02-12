@@ -14,10 +14,28 @@ npm install --save-dev protractor-smartrunner
 
 ### 1. Record status of test runs
 
-This feature records the status (`passed` or `failed`) of every test run, and stores it in the filesystem.
-After the first run, during every subsequent protractor execution, it only lets the failed tests to run, every previously passed tests will be skipped. 
+This feature records the status of every test run, and stores it in the filesystem (in s directory specified in its configuration).
 
-This can be particularly handy and performant in CI environments, if you happen to have flaky tests, or you know that some of your tests might have failed, not because of your changeset, but e.g.: lack of, shortage of or bug in the related BE services. This way, fixing the BE, you can rerun only those tests which failed.
+Every test has the following status object stored in json files:
+```json
+{
+    "suite-name": {
+        "test-name": {
+            // Number of test retries before is has passed, if passed at all
+            "retries": 0,
+            // Whether it has passed or not
+            "passed": true,
+            // In case if it is passed, what was the duration of the last (successful) execution
+            "duration": 399 
+        },
+        ...
+    },
+    ...
+}
+```
+After the first run, during every subsequent protractor execution, this feature only lets the failed tests to run, every previously passed tests will be skipped (and displayed with the `✅ previously passed:` prefix, which is configurable, see the [options](#options)). 
+
+This can be particularly handy and performant in CI environments, if you happen to have flaky tests, or you know that some of your tests might have failed, not because of your changeset, but e.g.: shortage of BE service or bug in the related BE service. This way, fixing the BE, you can rerun only those tests which failed.
 
 Obviously, if you change something in your code (new changeset), it makes sense to rerun all of the tests, not just the previously failed ones. That is why, the **protractor-smartrunner** is bound to your codebase snapshot identifier (`repoHash`), which in case of git, make sense to be the hash of your current `HEAD`.
 
@@ -57,7 +75,8 @@ Smartrunner accepts the following configuration options:
 
 ```ts
 interface SmartRunnerOptions {
-    outputDirectory?: string;  // defaults to './.protractor-smartrunner'
+    outputDirectory?: string;  // default: './.protractor-smartrunner'
+    passedMessagePrefix?: string; // default: '✅ previously passed:'
     repoHash: string;
 }
 ```

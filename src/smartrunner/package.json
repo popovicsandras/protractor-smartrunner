@@ -31,5 +31,8 @@
   "dependencies": {
     "filenamify": "4.1.0",
     "fs-extra": "8.1.0"
+  },
+  "peerDependencies": {
+      "protractor": "~7.0.0"
   }
 }

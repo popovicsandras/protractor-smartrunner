@@ -8,7 +8,7 @@ const resolve = require('path').resolve;
 
 const smartRunnerDir = resolve(__dirname, '../..', '.protractor-smartrunner-case-with-empty-exclusion');
 
-const specReporter = new SpecReporter({ spec: { displayStacktrace: true } });
+const specReporter = new SpecReporter({ spec: { displayStacktrace: 'none' } });
 exports.config = {
     allScriptsTimeout: 11000,
     specs: ['./src/**/*.spec.ts'],
@@ -52,7 +52,7 @@ exports.config = {
     },
 
     afterLaunch() {
-        if (specReporter.metrics.totalSpecsDefined !== specReporter.metrics.executedSpecs) {
+        if (specReporter.metrics.totalSpecsDefined !== specReporter.metrics.executedSpecs + specReporter.metrics.skippedSpecs) {
             console.log(`Expected ${specReporter.metrics.totalSpecsDefined} specs to be run,
              but only ${specReporter.metrics.executedSpecs} have been run.`);
             process.exit(1);

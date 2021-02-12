@@ -10,10 +10,10 @@
     "test": "jest",
     "lint": "ng lint",
     "pree2e": "npm run build:plugin",
-    "e2e:exclusion": "export GIT_HASH=`git rev-parse HEAD` && protractor ./e2e/case-with-exclusion/protractor.conf.ts",
-    "e2e:empty-exclusion": "export GIT_HASH=`git rev-parse HEAD` && protractor ./e2e/case-with-empty-exclusion/protractor.conf.ts",
+    "e2e:exclusion": "GIT_HASH=`git rev-parse HEAD` protractor ./e2e/case-with-exclusion/protractor.conf.ts",
+    "e2e:empty-exclusion": "GIT_HASH=`git rev-parse HEAD` protractor ./e2e/case-with-empty-exclusion/protractor.conf.ts",
     "e2e": "npm run e2e:exclusion && npm run e2e:empty-exclusion",
-    "ng-e2e": "export GIT_HASH=`git rev-parse HEAD` && ng e2e --configuration=dev-server",
+    "ng-e2e": "GIT_HASH=`git rev-parse HEAD` ng e2e --configuration=dev-server",
     "build:plugin": "tsc --project ./src/smartrunner"
   },
   "config": {

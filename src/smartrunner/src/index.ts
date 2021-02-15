@@ -1,2 +1,2 @@
-import { SmartRunner } from './smartrunner';
-export = SmartRunner;
+import { SmartRunnerFactory } from './smartrunner.factory';
+export = SmartRunnerFactory;

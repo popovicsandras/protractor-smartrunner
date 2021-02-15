@@ -1,25 +1,52 @@
 language: node_js
-dist: trusty
-sudo: required
+dist: bionic
+arch: arm64-graviton2
 node_js:
-  - "10"
+  - 14.15.4
+
 git:
   depth: 50
 
 branches:
   only:
-  - master
+    - master
+    - next
 
-before_install:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
-    - sleep 3 # give xvfb some time to start
+addons:
+  chrome: stable
+services:
+  - xvfb
+
+install: echo "No need for this"
 
 jobs:
-    include:
-        - stage: "Protractor tests"
-          script: npm run ci
+  include:
+    - stage: NPM Cache and build
+      before_script: npm ci
+      script: npm run build:plugin
+      workspaces:
+        create:
+          name: node_modules_and_artefact_cache
+          paths:
+            - node_modules
+            - src/smartrunner/lib
+        use: node_modules_and_artefact_cache
+
+    - stage: Protractor tests
+      script: npm run ci
+      workspaces:
+        use: node_modules_and_artefact_cache
+      if: type == pull_request
+
+deploy:
+  provider: npm
+  access: public
+  src: ./src/smartrunner
+  api_token:
+    secure: nLBnsYdGCY4/xBF/BuudtpavVRzb52zPjZx6AYy0rRlseFJKC4jD7GDP2TPlNad8HhvdOVJbHO8+duZmP++Zlk13BTxy1dlXuPinoEVpJ3LB4R+fLVKpWBZrU/XRxsOfyqp7uZTbxqiumAu+nGjF5MsNcyGnOxpgYbzXgWWcm5tdBkzRswiYuK7RCKRMf9fFFCbQb4bSaIvFzTCe3rz4gTh4u+0fzBQTUYVZzUYn/ftOQtUweSgEIsWBAC6Lg1qTw9OoXgyRIaDQtwt5tDQI0zH7EB5VXQ1A5fQllbxq6ZvzvGAzvkYQDhQNtEYoiVn+6rgw/fbUFwhK3K5vGcfsAxeugdQRPilRNWQfLi8p2I5IT1qIElXF+q2txiYyTocFLJswUMwJNCJVWcHXk9BPZgp8J6qA5+5Rj5S5gTaehSULCFFE0mjkroYdVRyaF3Qt7E1C4gLuD9cvqyX9BWOrUMqUhhVQqxpNn/VlwIutdrDSGDGlZ+Fi+aTXSnz1xHW0ZLgYImQr3oLYVUpA2Gwuw+IPmt1U3O6aUoUzXVigMqUKreuE+9f/QY6ZAT5CYSD+qFRwY++XxbfevuHnVlDjuxrS3VcNPEwD3RYUy1u0ClHShaSUcMTeqQ5469vQ7TfpKC90GLm2o05O6nAIQ9of+5+tCMDe3cTkCfjIyOPkoTw=
+  edge: true
+  tag: $NPM_TAG
+  dry_run: true
 
 cache:
-  directories:
-  - node_modules
+  npm: true

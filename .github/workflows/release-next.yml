@@ -24,7 +24,7 @@ jobs:
       env:
         CI: true
     - name: Publish to npm
-      run: npm publish ./src/smartrunner --tag next --dry-run
+      run: npm publish ./src/smartrunner --tag next
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

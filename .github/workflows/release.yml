@@ -1,29 +1,29 @@
-# name: Release
+name: Release
 
-# on:
-#   release:
-#     types: [published]
+on:
+  release:
+    types: [published]
 
-# jobs:
-#   build:
+jobs:
+  build:
 
-#     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-#     steps:
-#     - uses: actions/checkout@v1
-#     - name: Use Node.js 10.x
-#       uses: actions/setup-node@v1
-#       with:
-#         node-version: '10.x'
-#         registry-url: 'https://registry.npmjs.org'
-#     - name: Build plugin
-#       run: |
-#         npm ci
-#         npm run build:plugin --if-present
-#       env:
-#         CI: true
-#     - name: Publish to npm
-#       run: cd ./src/smartrunner && npm publish
-#       env:
-#         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        registry-url: 'https://registry.npmjs.org'
+    - name: Build plugin
+      run: |
+        npm ci
+        npm run build:plugin --if-present
+      env:
+        CI: true
+    - name: Publish to npm
+      run: npm publish ./src/smartrunner
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

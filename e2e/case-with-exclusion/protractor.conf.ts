@@ -4,16 +4,19 @@
 
 const { SpecReporter } = require('jasmine-spec-reporter');
 const retry = require('protractor-retry').retry;
-const SmartRunner = require('../../src/smartrunner');
 const fs = require('fs-extra');
 const resolve = require('path').resolve;
+const getSmartRunnerFactory = require('../config/get-smart-runner-config-factory.js');
 
 const smartRunnerDir = resolve(__dirname, '../..', '.protractor-smartrunner-case-with-exclusion');
+const exclusionPath = resolve(__dirname, 'protractor.excludes.json');
 const attemptsFile = resolve(smartRunnerDir, `${process.env.GIT_HASH}.json`);
 let attempts = { count: 1 };
 if (fs.existsSync(attemptsFile)) {
     attempts = fs.readJsonSync(attemptsFile);
 }
+
+const smartRunnerFactory = getSmartRunnerFactory(smartRunnerDir, exclusionPath);
 
 exports.config = {
     allScriptsTimeout: 11000,
@@ -48,16 +51,13 @@ exports.config = {
         showColors: true,
         defaultTimeoutInterval: 30000,
         print: () => {},
-        ...SmartRunner.withOptionalExclusions(resolve(__dirname, 'protractor.excludes.json'))
+        ...smartRunnerFactory.applyExclusionFilter(),
     },
 
     onPrepare() {
         retry.onPrepare();
+        smartRunnerFactory.getInstance().onPrepare();
 
-        SmartRunner.apply({
-            outputDirectory: smartRunnerDir,
-            repoHash: process.env.GIT_HASH
-        });
         require('ts-node').register({
             project: require('path').join(__dirname, './tsconfig.json')
         });

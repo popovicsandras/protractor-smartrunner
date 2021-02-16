@@ -1,27 +1,26 @@
 version: ~> 1.0
 language: node_js
-dist: trusty
-sudo: required
+dist: bionic
+arch: arm64-graviton2
 node_js:
-  - "10"
+  - 14.15.4
+
 git:
   depth: 50
 
 branches:
   only:
-  - master
-  - next
+    - master
+    - next
 
-before_install:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
-    - sleep 3 # give xvfb some time to start
+addons:
+  chrome: stable
+services:
+  - xvfb
 
 jobs:
-    include:
-        - stage: "Protractor tests"
-          script: npm run ci
-
-cache:
-  directories:
-  - node_modules
+  include:
+    - stage: Run tests
+      before_script: npm run build:plugin
+      script: npm run ci
+      if: type == pull_request

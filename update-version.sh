@@ -21,13 +21,15 @@ while [[ $1  == -* ]]; do
 done
 
 SEMVER=`cd "$DIR" && npm --no-git-tag-version version $VERSION`
-cd "$DIR/src/smartrunner" && npm --no-git-tag-version version $SEMVER
+cd "$DIR/src/smartrunner" && npm --no-git-tag-version version $SEMVER && npm install --package-lock-only
+cd "$DIR"
 
 git add "$DIR/package.json"
 git add "$DIR/package-lock.json"
 git add "$DIR/src/smartrunner/package.json"
-git commit -m "Creating version $SEMVER"
-git push origin master
+git add "$DIR/src/smartrunner/package-lock.json"
+# git commit -m "Creating version $SEMVER"
+# git push origin master
 
-git tag "$SEMVER"
-git push origin "$SEMVER"
+# git tag "$SEMVER"
+# git push origin "$SEMVER"

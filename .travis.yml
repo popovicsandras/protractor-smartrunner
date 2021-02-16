@@ -18,9 +18,39 @@ addons:
 services:
   - xvfb
 
+env:
+  global:
+    - NODE_MODULES_DIR="./node_modules"
+
+install: echo "Nope..."
+
 jobs:
   include:
+    - stage: Warmup
+      name: "Npm install and cache"
+      script: |
+        if [[ ! -d $NODE_MODULES_DIR ]]; then
+          npm ci
+        else
+          echo "npm install has been done already for this build, node_modules was restored as a workspace folder..."
+        fi
+      workspaces:
+        create:
+          name: node_modules_cache
+          paths:
+            - "$NODE_MODULES_DIR"
+        use: node_modules_cache
+
     - stage: Run tests
-      before_script: npm run build:plugin
-      script: npm run ci
-      if: type == pull_request
+      before_script: npm run build:plugin && npm run build
+      script: npm run ci || exit 1
+      workspaces:
+        create:
+          # Every consecutive reruns are going to run only the failed ones
+          name: smartrunner_cache
+          paths:
+            - .protractor-smartrunner-case-with-empty-exclusion
+            - .protractor-smartrunner-case-with-exclusion
+        use:
+          - node_modules_cache
+          - smartrunner_cache

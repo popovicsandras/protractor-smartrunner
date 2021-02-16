@@ -1,6 +1,13 @@
 name: Pull request build
 
-on: pull_request
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+      - next
 
 jobs:
   build:
@@ -35,6 +42,9 @@ jobs:
 
     - name: Build plugin
       run: npm run build:plugin --if-present
+
+    - name: Build application to test against
+      run: npm run build
 
     - name: Restore previous smartrunner results
       run: |

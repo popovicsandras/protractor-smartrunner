@@ -3,10 +3,13 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
-const SmartRunner = require('../../src/smartrunner');
 const resolve = require('path').resolve;
+const getSmartRunnerFactory = require('../config/get-smart-runner-config-factory.js');
 
 const smartRunnerDir = resolve(__dirname, '../..', '.protractor-smartrunner-case-with-empty-exclusion');
+const exclusionPath = resolve(__dirname, 'protractor.excludes.json');
+
+const smartRunnerFactory = getSmartRunnerFactory(smartRunnerDir, exclusionPath);
 
 const specReporter = new SpecReporter({ spec: { displayStacktrace: 'none' } });
 exports.config = {
@@ -37,14 +40,11 @@ exports.config = {
         showColors: true,
         defaultTimeoutInterval: 30000,
         print: () => {},
-        ...SmartRunner.withOptionalExclusions(resolve(__dirname, 'protractor.excludes.json'))
+        ...smartRunnerFactory.applyExclusionFilter(),
     },
 
     onPrepare() {
-        SmartRunner.apply({
-            outputDirectory: smartRunnerDir,
-            repoHash: process.env.GIT_HASH
-        });
+        smartRunnerFactory.getInstance().onPrepare();
         require('ts-node').register({
             project: require('path').join(__dirname, './tsconfig.json')
         });

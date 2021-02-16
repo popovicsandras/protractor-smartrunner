@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        registry-url: 'https://registry.npmjs.org'
+    - name: Build plugin
+      run: |
+        npm ci
+        npm run build:plugin --if-present
+      env:
+        CI: true
+    - name: Publish to npm
+      run: npm publish ./src/smartrunner --tag next --dry-run
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+

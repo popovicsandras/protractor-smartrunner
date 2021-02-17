@@ -21,7 +21,8 @@ exports.config = {
                 '--disable-gpu',
                 '--window-size=800x600',
                 '--disable-web-security',
-                '--incognito'
+                '--incognito',
+                '--no-sandbox'
             ]
         }
     },

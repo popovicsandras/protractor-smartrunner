@@ -1,0 +1,64 @@
+name: Pull request build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+      - next
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      id: cache
+      env:
+        cache-name: cache
+      with:
+        path: |
+          node_modules
+          */*/node_modules
+        key: cache-${{ runner.os }}-${{ matrix.node-version }}-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Build plugin
+      run: npm run build:plugin --if-present
+
+    - name: Build application to test against
+      run: npm run build
+
+    - name: Restore previous smartrunner results
+      run: |
+        echo "Here you could restore your previously saved smartrunner results from e.g. S3. Unfortunately with Github actions you can't store artefacts between workflows and reruns... Check Travis workspaces for somethign like this"
+        ls .protractor-smartrunner-case-with-exclusion
+        ls .protractor-smartrunner-case-with-empty-exclusion
+      continue-on-error: true
+
+    - name: Run tests
+      run: npm run ci
+
+    - name: Save smartrunner results
+      run: |
+        ls .protractor-smartrunner-case-with-exclusion
+        ls .protractor-smartrunner-case-with-empty-exclusion
+        echo "Here you can save the updated results to e.g. S3. Unfortunately with Github actions you can't store artefacts between workflows and reruns... Check Travis workspaces for somethign like this"
+      continue-on-error: true

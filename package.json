@@ -5,7 +5,7 @@
     "postinstall": "ngcc && webdriver-manager update --gecko=false --versions.chrome=$npm_package_config_chromeDriver",
     "ng": "ng",
     "start": "ng serve",
-    "ci": "./ci.sh",
+    "ci": "lite-server --baseDir='./dist/testapp' -c ./lite-server.config.json >/dev/null & (npm run e2e:exclusion && npm run e2e:empty-exclusion)",
     "build": "ng build",
     "test": "jest",
     "lint": "ng lint",

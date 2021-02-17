@@ -1,24 +1,12 @@
 import { resolve } from 'path';
 import { Logger } from 'protractor/built/logger';
+import { SuiteResults, TestResult } from './common.interfaces';
+import { loadResults, getResultsOutputPath } from './helpers';
 const fs = require('fs-extra');
 const filenamify = require('filenamify');
 
-export interface TestResult {
-    retries: number;
-    passed: boolean;
-    duration: number;
-}
-
-export interface TestResults {
-    [ testName: string ]: TestResult;
-}
-
-export interface SuiteResults {
-    [ suiteName: string ]: TestResults;
-}
-
 export interface SuiteUpdateFlags {
-    [ suiteName: string ]: boolean;
+    [suiteName: string]: boolean;
 }
 
 export class SmartRunnerResults {
@@ -28,21 +16,18 @@ export class SmartRunnerResults {
     private affectedSuites: SuiteUpdateFlags;
 
     constructor(outputDirectory: string, repoHash: string, private logger: Logger) {
-        this.affectedSuites = {};
-
-        if (!repoHash?.length) {
-            this.logger.error('🛑 ERROR: repoHash is not defined, terminating...');
+        try {
+            this.affectedSuites = {};
+            this.smartRunDir = getResultsOutputPath(outputDirectory, repoHash);
+            fs.ensureDirSync(this.smartRunDir);
+        } catch (error) {
+            this.logger.error(error.message);
             process.exit(1);
         }
-
-        this.smartRunDir = resolve(outputDirectory, repoHash);
-        fs.ensureDirSync(this.smartRunDir);
     }
 
     load() {
-        this.results = fs.readdirSync(this.smartRunDir)
-            .map((jsonFile: string) => fs.readJsonSync(resolve(this.smartRunDir, `./${jsonFile}`)))
-            .reduce((accumulator: SuiteResults, currentValue: SuiteResults) => ({ ...accumulator, ...currentValue }), {});
+        this.results = loadResults(this.smartRunDir);
     }
 
     set(suiteName: string, testName: string, passed: boolean, duration: number) {

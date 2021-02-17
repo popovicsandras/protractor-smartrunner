@@ -1,6 +1,6 @@
 {
-  "name": "protractor-smartrunner",
-  "version": "2.0.0-beta4",
+  "name": "protractor-smartrunner-all",
+  "version": "2.0.0-beta5",
   "scripts": {
     "postinstall": "ngcc && webdriver-manager update --gecko=false --versions.chrome=$npm_package_config_chromeDriver",
     "ng": "ng",
@@ -9,7 +9,7 @@
     "build": "ng build",
     "test": "jest",
     "lint": "ng lint",
-    "pree2e": "npm run build:plugin",
+    "pree2e": "npm run build:plugin && rm -rf ./node_modules/protractor-smartrunner && cp -R ./src/smartrunner ./node_modules/protractor-smartrunner",
     "e2e:exclusion": "GIT_HASH=`git rev-parse HEAD` protractor ./e2e/case-with-exclusion/protractor.conf.ts",
     "e2e:empty-exclusion": "GIT_HASH=`git rev-parse HEAD` protractor ./e2e/case-with-empty-exclusion/protractor.conf.ts",
     "e2e": "npm run e2e:exclusion && npm run e2e:empty-exclusion",
@@ -18,6 +18,10 @@
   },
   "config": {
     "chromeDriver": "78.0.3904.70"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/popovicsandras/protractor-smartrunner"
   },
   "dependencies": {
     "chalk": "^4.1.0",

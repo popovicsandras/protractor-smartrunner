@@ -1,4 +1,4 @@
-const SmartRunnerFactory = require('../../src/smartrunner');
+const SmartRunnerFactory = require('protractor-smartrunner').SmartRunnerFactory;
 
 function getSmartRunnerFactory(outputDirectory, exclusionPath) {
     return new SmartRunnerFactory({

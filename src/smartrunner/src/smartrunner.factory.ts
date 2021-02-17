@@ -1,5 +1,5 @@
 import { Logger } from 'protractor/built/logger';
-import { isCliGrepped } from './helpers';
+import { isCliGrepped, getExclusionGrep } from './helpers';
 import { SmartRunnerOptions, SmartRunner } from './smartrunner';
 const fs = require('fs-extra');
 
@@ -7,6 +7,7 @@ const LOGGER_ID = 'smartrunner';
 const DEFAULT_OPTIONS = {
     outputDirectory: './.protractor-smartrunner',
     passedMessagePrefix: '🟢 previously passed:',
+    excludedMessagePrefix: '🟠 excluded:',
     exclusionPath: null
 };
 
@@ -30,12 +31,12 @@ export class SmartRunnerFactory {
                 process.exit(564);
             }
 
-            const exclusions = Object.keys(require(this.options.exclusionPath));
+            const exclusions = getExclusionGrep(this.options.exclusionPath);
 
             if (exclusions.length) {
-                this.logger.info('🚫 Exclusion patterns: ', exclusions.join(', '));
+                this.logger.info('🚫 Exclusion patterns: ', exclusions.replace('|', ', '));
                 return {
-                    grep: exclusions.join('|'),
+                    grep: exclusions,
                     invertGrep: true
                 };
             }

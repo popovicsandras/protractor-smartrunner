@@ -1,8 +1,17 @@
 # Protractor Smartrunner
 
 Protractor utility features for having more configuration over spec filtering, like:
-1. [Keeping track of passed/failed tests between runs](#1-record-status-of-test-runs) (works together with [protractor-retry](https://www.npmjs.com/package/protractor-retry)).
+1. [Keeping track of passed/failed tests between runs](#1-record-status-of-test-runs)
+(works together with [protractor-retry](https://www.npmjs.com/package/protractor-retry) and [protractor-retry-angular-cli](https://www.npmjs.com/package/protractor-retry-angular-cli)).
 2. [Having an exclusion file containing the name of temporary disabled specs.](#2-spec-exclusions)
+
+## Warning
+
+> ___
+> This library only works for protractor configurations using the [jasmine framework](#usage)!!!
+Mocha framework support is NOT planned at the moment. If it is needed by someone, then Pull Requests are more than welcome. :P 
+> ___
+
 
 ## Installation
 
@@ -16,7 +25,7 @@ npm install --save-dev protractor-smartrunner
 
 This feature records the status of every test run, and stores it in the filesystem (in s directory specified in its configuration).
 
-Every test has the following status object stored in json files:
+Every `passed` or `failed` test **(no pending or disabled!)** has the following status object stored in json files:
 ```json
 {
     "suite-name": {
@@ -33,7 +42,7 @@ Every test has the following status object stored in json files:
     ...
 }
 ```
-After the first run, during every subsequent protractor execution, this feature only lets the failed tests to run, every previously passed tests will be skipped (and displayed with the `✅ previously passed:` prefix, which is configurable, see the [options](#options)). 
+After the first run, during every subsequent protractor execution, this feature only lets the failed tests to run, every previously passed tests will be skipped (and displayed with the `🟢 previously passed:` prefix, which is configurable, see the [options](#options)). 
 
 This can be particularly handy and performant in CI environments, if you happen to have flaky tests, or you know that some of your tests might have failed, not because of your changeset, but e.g.: shortage of BE service or bug in the related BE service. This way, fixing the BE, you can rerun only those tests which failed.
 
@@ -50,10 +59,15 @@ export GIT_HASH=`git rev-parse HEAD`
 
 #### Usage
 
-Add the following snippets to your protractor configuration file:
+Add the following snippets to your `protractor.conf.js` configuration file:
 
 ```js
-const SmartRunner = require('protractor-smartrunner');
+const SmartRunnerFactory = require('protractor-smartrunner').SmartRunnerFactory;
+
+const smartRunnerFactory = new SmartRunnerFactory({
+    outputDirectory: '/absolute/path/to/where/you/want/to/store/the/results',
+    repoHash: process.env.GIT_HASH
+});
 
 exports.config = {
     ...
@@ -62,7 +76,7 @@ exports.config = {
     framework: 'jasmine',
     
     onPrepare() {
-        SmartRunner.apply({ repoHash: process.env.GIT_HASH });
+        smartRunnerFactory.getInstance().onPrepare();
     }
 
     ...
@@ -71,12 +85,14 @@ exports.config = {
 
 ##### Options
 
-Smartrunner accepts the following configuration options:
+SmartRunnerFactory accepts the following configuration options:
 
 ```ts
 interface SmartRunnerOptions {
     outputDirectory?: string;  // default: './.protractor-smartrunner'
-    passedMessagePrefix?: string; // default: '✅ previously passed:'
+    passedMessagePrefix?: string; // default: '🟢 previously passed:'
+    excludedMessagePrefix?: string; // default: '🟠 excluded:'
+    exclusionPath?: string | null; // default: null
     repoHash: string;
 }
 ```
@@ -85,7 +101,12 @@ interface SmartRunnerOptions {
 
 ```js
 const retry = require('protractor-retry').retry;
-const SmartRunner = require('protractor-smartrunner');
+const SmartRunnerFactory = require('protractor-smartrunner').SmartRunnerFactory;
+
+const smartRunnerFactory = new SmartRunnerFactory({
+    outputDirectory: '/absolute/path/to/where/you/want/to/store/the/results',
+    repoHash: process.env.GIT_HASH
+});
 
 exports.config = {
     
@@ -96,8 +117,7 @@ exports.config = {
     
     onPrepare() {
         retry.onPrepare();
-
-        SmartRunner.apply({ repoHash: process.env.GIT_HASH });
+        smartRunnerFactory.getInstance().onPrepare();
     },
 
     onCleanUp(results, files) {
@@ -114,17 +134,10 @@ exports.config = {
 
 #### CI integration
 
-The test results are stored in the following directory by default: `.protractor-smartrunner` (can be configured, see [options](#options)). To be able to store the results between test runs, you may need to cache this directory in your CI pipeline.
+The test results are stored in the following directory by default: `./.protractor-smartrunner` (can be configured, see [options](#options)). To be able to store the results between test runs, you may need to cache this directory in your CI pipeline.
 
 ##### Travis
-With Tavis, you can do this with the cache option in your `.travis.yml` file:
-
-```yml
-cache:
-  directories:
-  - node_modules
-  - .protractor-smartrunner
-```
+With Tavis, you can do this with Travis Workspace features. See the [.travis.yml]('https://github.com/popovicsandras/protractor-smartrunner/blob/master/.travis.yml') file for the details.
 
 ### 2. Spec exclusions
 
@@ -134,7 +147,7 @@ With this feature, one is able to list specs by their name in a separate file to
 > This feature uses protractor's `jasmineNodeOpts.grep` and `jasmineNodeOpts.invertGrep: true` in the background. However if you run protractor with the `-g`/`--grep` cli arguments, those cli arguments takes precedence over what you have in the exclusion file.
 > ___
 
-The spec exclusion file is a one level depth dictionary json, where the keys are the grep pattern to exclude, like this:
+The spec exclusion file is a one level deep json object, where the keys are the **grep** pattern to exclude, like this:
 
 #### Exclusion file
 
@@ -151,8 +164,14 @@ For the functionality, the only important thing is the keys in the object. The v
 #### Adding configuration to protractor
 
 ```js
-const SmartRunner = require('protractor-smartrunner');
-const resolve = require('path').resolve;
+const SmartRunnerFactory = require('protractor-smartrunner').SmartRunnerFactory;
+
+const smartRunnerFactory = new SmartRunnerFactory({
+    outputDirectory: '/absolute/path/to/where/you/want/to/store/the/results',
+    repoHash: process.env.GIT_HASH,
+    exclusionPath: resolve(__dirname, 'protractor.excludes.json')
+});
+
 
 exports.config = {
     ...
@@ -161,9 +180,7 @@ exports.config = {
         showColors: true,
         defaultTimeoutInterval: 30000,
         print: () => {},
-        ...SmartRunner.withOptionalExclusions(
-            resolve(__dirname, 'protractor.excludes.json')
-        )
+        ...smartRunnerFactory.applyExclusionFilter()
     },
 
     ...

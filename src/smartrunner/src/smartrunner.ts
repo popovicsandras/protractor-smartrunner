@@ -1,11 +1,12 @@
 import { SmartRunnerResults } from './smartrunner-results';
 import { SmartRunnerReporter } from './smartrunner-reporter';
 import { Logger } from 'protractor/built/logger';
-import { isCliGrepped } from './helpers';
+import { isCliGrepped, getExclusionGrep } from './helpers';
 
 export interface SmartRunnerOptions {
     outputDirectory?: string;
     passedMessagePrefix?: string;
+    excludedMessagePrefix?: string;
     repoHash: string;
     exclusionPath?: string | null;
 }
@@ -27,6 +28,8 @@ export class SmartRunner {
 
         if (!cliGrepped) {
             const oldSpecFilter = jasmine.getEnv().specFilter;
+            const exclusions = getExclusionGrep(this.options.exclusionPath);
+
             jasmine.getEnv().specFilter = (spec) => {
                 const testName = spec.getResult().description;
                 const suiteName = spec.getFullName().replace(testName, '').trim();
@@ -34,6 +37,10 @@ export class SmartRunner {
                 const testPassedInPreviousRun = this.results.get(suiteName, testName);
                 if (testPassedInPreviousRun.passed) {
                     this.logger.info(`${this.options.passedMessagePrefix} ${suiteName} ${testName}`);
+                }
+
+                if (exclusions.length && spec.getFullName().match(new RegExp(exclusions)) != null) {
+                    this.logger.info(`${this.options.excludedMessagePrefix} ${suiteName} ${testName}`);
                 }
 
                 return !testPassedInPreviousRun.passed && oldSpecFilter(spec);

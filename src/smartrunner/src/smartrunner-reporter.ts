@@ -23,8 +23,8 @@ export class SmartRunnerReporter {
         const duration = new Date().getTime() - this.startTime.getTime();
         const specName = result.description;
         const suiteName = result.fullName.replace(specName, '').trim();
-        if (result.status !== 'disabled') {
-            this.results.set(suiteName, specName, result.status === 'passed' || result.status === 'pending', duration);
+        if (result.status !== 'disabled' && result.status !== 'pending') {
+            this.results.set(suiteName, specName, result.status === 'passed', duration);
         }
     }
 

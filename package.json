@@ -1,6 +1,6 @@
 {
   "name": "protractor-smartrunner-all",
-  "version": "2.0.0-beta5",
+  "version": "2.0.0-beta6",
   "scripts": {
     "postinstall": "ngcc && webdriver-manager update --gecko=false --versions.chrome=$npm_package_config_chromeDriver",
     "ng": "ng",

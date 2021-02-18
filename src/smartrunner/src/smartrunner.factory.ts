@@ -1,5 +1,5 @@
 import { Logger } from 'protractor/built/logger';
-import { isCliGrepped, getExclusionGrep } from './helpers';
+import { isCliGrepped, getExclusionGrep, getExclusions } from './helpers';
 import { SmartRunnerOptions, SmartRunner } from './smartrunner';
 const fs = require('fs-extra');
 
@@ -31,14 +31,12 @@ export class SmartRunnerFactory {
                 process.exit(564);
             }
 
-            const exclusions = getExclusionGrep(this.options.exclusionPath);
+            const exclusions = getExclusions(this.options.exclusionPath);
+            const grep = getExclusionGrep(this.options.exclusionPath);
 
             if (exclusions.length) {
-                this.logger.info('🚫 Exclusion patterns: ', exclusions.replace('|', ', '));
-                return {
-                    grep: exclusions,
-                    invertGrep: true
-                };
+                this.logger.info('🚫 Exclusion patterns: ', exclusions.join(', '));
+                return { grep, invertGrep: true };
             }
         } else if (cliGrepped) {
             this.logger.warn(`🟠 Grep value has been passed as cli parameter, ignoring exclusion file`);

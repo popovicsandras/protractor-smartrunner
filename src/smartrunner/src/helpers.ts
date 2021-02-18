@@ -8,9 +8,12 @@ export function isCliGrepped() {
     );
 }
 
+export function getExclusions(filePath: string | null) {
+    return filePath?.length ? Object.keys(require(filePath)) : [''];
+}
+
 export function getExclusionGrep(filePath: string | null) {
-    const exclusions = filePath?.length ? Object.keys(require(filePath)) : [''];
-    return exclusions.join('|');
+    return getExclusions(filePath).join('|');
 }
 
 export function loadResults(resultsPath: string) {

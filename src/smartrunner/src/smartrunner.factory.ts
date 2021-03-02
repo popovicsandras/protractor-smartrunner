@@ -1,5 +1,5 @@
 import { Logger } from 'protractor/built/logger';
-import { isCliGrepped, getExclusionGrep, getExclusions } from './helpers';
+import { isCliGrepped, getExclusionGrep, getExclusions, getResultsOutputPath } from './helpers';
 import { SmartRunnerOptions, SmartRunner } from './smartrunner';
 const fs = require('fs-extra');
 
@@ -13,12 +13,12 @@ const DEFAULT_OPTIONS = {
 
 export class SmartRunnerFactory {
     private logger: Logger;
-    constructor(private options: SmartRunnerOptions) {
+    constructor(private providedOptions: SmartRunnerOptions) {
         this.logger = new Logger(LOGGER_ID);
     }
 
     public getInstance() {
-        return new SmartRunner({ ...DEFAULT_OPTIONS, ...this.options }, this.logger);
+        return new SmartRunner(this.options, this.logger);
     }
 
     public applyExclusionFilter() {
@@ -43,5 +43,13 @@ export class SmartRunnerFactory {
         }
 
         return {};
+    }
+
+    public getResultsOutputPath(): string {
+        return getResultsOutputPath(this.options.outputDirectory, this.options.repoHash);
+    }
+
+    public get options() {
+        return { ...DEFAULT_OPTIONS, ...this.providedOptions };
     }
 }

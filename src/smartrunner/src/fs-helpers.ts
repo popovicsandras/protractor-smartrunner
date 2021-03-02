@@ -17,6 +17,7 @@ export function backupResults(resultsPath: string) {
 
     const results = loadResults(resultsPath);
     fs.outputJsonSync(getBackupFileName(resultsPath), results, { spaces: 4 });
+    return results;
 }
 
 export function loadResults(resultsPath: string): SuiteResults {

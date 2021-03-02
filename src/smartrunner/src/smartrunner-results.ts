@@ -1,7 +1,8 @@
 import { resolve } from 'path';
 import { Logger } from 'protractor/built/logger';
 import { SuiteResults, TestResult } from './common.interfaces';
-import { loadResults, getResultsOutputPath } from './helpers';
+import { loadResults } from './fs-helpers';
+import { getResultsOutputPath } from './helpers';
 const fs = require('fs-extra');
 const filenamify = require('filenamify');
 

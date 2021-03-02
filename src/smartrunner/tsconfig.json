@@ -8,5 +8,5 @@
     "types": ["jasmine", "node"]
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["../node_modules", "specs/**/*.ts"]
+  "exclude": ["../node_modules", "**/*.spec.ts"]
 }

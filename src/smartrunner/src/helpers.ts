@@ -1,6 +1,4 @@
-const fs = require('fs-extra');
 import { resolve } from 'path';
-import { SuiteResults } from './common.interfaces';
 
 export function isCliGrepped() {
     return process.argv.some(
@@ -14,18 +12,6 @@ export function getExclusions(filePath: string | null) {
 
 export function getExclusionGrep(filePath: string | null) {
     return getExclusions(filePath).join('|');
-}
-
-export function loadResults(resultsPath: string) {
-    return fs.readdirSync(resultsPath)
-        .map((jsonFile: string) =>
-            fs.readJsonSync(resolve(resultsPath, `./${jsonFile}`))
-        )
-        .reduce(
-            (accumulator: SuiteResults, currentValue: SuiteResults) => ({
-                ...accumulator,
-                ...currentValue,
-            }), {});
 }
 
 export function getResultsOutputPath(outputDirectory: string, repoHash: string) {

@@ -53,7 +53,8 @@ export class SmartRunnerResults {
         for (const suite of suites) {
             if (updatedSuiteNames.indexOf(suite) !== -1) {
                 this.logger.info(`ℹ️  Suite (${suite}) was affected by this thread, writing to filesystem.`);
-                const fileName = resolve(this.smartRunDir, filenamify(`./${suite}.json`));
+                const suiteFileName = filenamify(suite.replace(/\s/g, '').toLowerCase(), { maxLength: 250 }) + '.json';
+                const fileName = resolve(this.smartRunDir, suiteFileName);
                 fs.outputJsonSync(fileName, { [suite]: this.results[suite] }, { spaces: 4 });
             }
         }

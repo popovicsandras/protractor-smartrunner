@@ -35,7 +35,7 @@ export class SmartRunner {
                 const suiteName = spec.getFullName().replace(testName, '').trim();
 
                 const testPassedInPreviousRun = this.results.get(suiteName, testName);
-                if (testPassedInPreviousRun.passed) {
+                if (testPassedInPreviousRun?.passed) {
                     this.logger.info(`${this.options.passedMessagePrefix} ${suiteName} ${testName}`);
                 }
 
@@ -43,7 +43,7 @@ export class SmartRunner {
                     this.logger.info(`${this.options.excludedMessagePrefix} ${suiteName} ${testName}`);
                 }
 
-                return !testPassedInPreviousRun.passed && oldSpecFilter(spec);
+                return !testPassedInPreviousRun?.passed && oldSpecFilter(spec);
             };
         } else {
             this.logger.warn(`Grep value has been passed as cli parameter, ignoring previous protractor smartrunner results (if exists).`);

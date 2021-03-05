@@ -1,6 +1,6 @@
 {
   "name": "protractor-smartrunner",
-  "version": "2.0.0-beta10",
+  "version": "2.0.0-beta11",
   "description": "Protractor utility for keeping track of passed/failed tests between runs. Works together with protractor-retry.",
   "main": "lib/index.js",
   "repository": {

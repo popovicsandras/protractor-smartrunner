@@ -35,7 +35,7 @@ export function loadResults(resultsPath: string): SuiteResults {
             }), {});
 }
 
-export function calculateDiff(resultsPath: string) {
+export function calculateDiff(resultsPath: string): SuiteResults {
 
     const backupFile = getBackupFileName(resultsPath);
     const latestResults = loadResults(resultsPath);
@@ -60,18 +60,20 @@ function calculateDiffForSuites(previousRun: SuiteResults, lastRun: SuiteResults
         }), {});
 }
 
-function calculateDiffForTests(previousRun: TestResults, lastRun: TestResults) {
+function calculateDiffForTests(previousRun: TestResults, lastRun: TestResults): TestResults {
     return Object.keys(previousRun)
-        .filter( testName => !previousRun[testName].passed && (lastRun?.[testName]?.retries - previousRun[testName].retries > 0) )
+        .filter( testName => !previousRun[testName].passed &&
+            (lastRun?.[testName]?.runs - previousRun[testName].runs > 0) )
         .map(testName => ({
             testName,
             results: {
-                retries: lastRun[testName].retries - previousRun[testName].retries,
+                failures: lastRun[testName].failures - previousRun[testName].failures,
+                runs: lastRun[testName].runs - previousRun[testName].runs,
                 passed: lastRun[testName].passed,
                 duration: lastRun[testName].duration
             }
         }))
-        .reduce((accumulator, current) => ({ ...accumulator, [current.testName]: current.results }), {});
+        .reduce<TestResults>((accumulator, current) => ({ ...accumulator, [current.testName]: current.results }), {});
 }
 
 function getBackupFileName(resultsPath: string) {

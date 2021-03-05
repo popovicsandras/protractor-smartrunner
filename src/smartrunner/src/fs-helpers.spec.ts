@@ -1,26 +1,27 @@
 const fs = require('fs-extra');
 const mock = require('mock-fs');
 import { loadResults, backupResults, calculateDiff, BackupError } from './fs-helpers';
+import { SuiteResults } from './common.interfaces';
 
 describe('helpers', () => {
-    const suite1Results = {
+    const suite1Results: SuiteResults = {
         suite1: {
-            test1: { retries: 0, passed: true, duration: 123 },
-            test2: { retries: 1, passed: true, duration: 456 },
-            test3: { retries: 2, passed: false, duration: 789 },
+            test1: { failures: 0, runs: 1, passed: true, duration: 123 },
+            test2: { failures: 1, runs: 2, passed: true, duration: 456 },
+            test3: { failures: 2, runs: 2, passed: false, duration: 789 },
         }
     };
 
-    const suite2Results = {
+    const suite2Results: SuiteResults = {
         suite2: {
-            test1: { retries: 0, passed: true, duration: 123 },
-            test2: { retries: 1, passed: false, duration: 456 },
+            test1: { failures: 0, runs: 1, passed: true, duration: 123 },
+            test2: { failures: 1, runs: 1, passed: false, duration: 456 },
         }
     };
 
-    const suite3ResultsInTextFile = {
+    const suite3ResultsInTextFile: SuiteResults = {
         suite3: {
-            test1: { retries: 0, passed: true, duration: 123 },
+            test1: { failures: 0, runs: 1, passed: true, duration: 123 },
         }
     };
 
@@ -115,15 +116,18 @@ describe('helpers', () => {
     describe('calculateDiff', () => {
 
         test('should return the lastly added results if no backup has been created yet', () => {
+            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
             mock({
                 './.test-protractor-smartrunner/123456': {
                     'file1.json': JSON.stringify(suite1Results),
                     'file2.json': JSON.stringify(suite2Results),
                 }
             });
-
             const results = calculateDiff('./.test-protractor-smartrunner/123456');
             expect(results).toEqual({...suite1Results, ...suite2Results});
+            expect(consoleLogSpy).toHaveBeenCalledWith('ℹ️  No backup file (./.test-protractor-smartrunner/123456.bak.json) found, returning the latest result set without calculating difference.');
+
+            consoleLogSpy.mockRestore();
         });
 
         test('should return empty object if no change has been done', () => {
@@ -131,143 +135,152 @@ describe('helpers', () => {
                 './.test-protractor-smartrunner/123456': {
                     'file1.json': JSON.stringify({
                         suite1: {
-                            test1: { retries: 0, passed: true, duration: 123 },
-                            test2: { retries: 0, passed: true, duration: 123 }
+                            test1: { failures: 0, runs: 1, passed: true, duration: 123 },
+                            test2: { failures: 0, runs: 1, passed: true, duration: 123 }
                         }
-                    }),
+                    } as SuiteResults),
                     'file2.json': JSON.stringify({
                         suite2: {
-                            test1: { retries: 0, passed: true, duration: 123 }
+                            test1: { failures: 0, runs: 1, passed: true, duration: 123 }
                         }
-                    })
+                    } as SuiteResults)
                 },
                 './.test-protractor-smartrunner/123456.bak.json': JSON.stringify({
                     suite1: {
-                        test1: { retries: 0, passed: true, duration: 123 },
-                        test2: { retries: 0, passed: true, duration: 123 }
+                        test1: { failures: 0, runs: 1, passed: true, duration: 123 },
+                        test2: { failures: 0, runs: 1, passed: true, duration: 123 }
                     },
                     suite2: {
-                        test1: { retries: 0, passed: true, duration: 123 }
+                        test1: { failures: 0, runs: 1, passed: true, duration: 123 }
                     }
-                })
+                } as SuiteResults)
             });
 
-            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({});
+            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({} as SuiteResults);
         });
 
-        test('should return only the previously failed ones with the correct retries\' differences', () => {
+        test('should return only the previously failed ones with the correct failures\' differences', () => {
             mock({
                 './.test-protractor-smartrunner/123456': {
                     'file1.json': JSON.stringify({
                         suite1: {
-                            test1: { retries: 5, passed: true, duration: 123 },
-                            test2: { retries: 5, passed: false, duration: 123 }
+                            test1: { failures: 5, runs: 6, passed: true, duration: 123 },
+                            test2: { failures: 5, runs: 5, passed: false, duration: 123 }
                         }
-                    }),
+                    } as SuiteResults),
                     'file2.json': JSON.stringify({
                         suite2: {
-                            test1: { retries: 5, passed: true, duration: 123 },
+                            test1: { failures: 5, runs: 6, passed: true, duration: 123 },
                         }
-                    }),
+                    } as SuiteResults),
                     'file3.json': JSON.stringify({
                         suite3: {
-                            test1: { retries: 2, passed: true, duration: 123 },
-                            test2: { retries: 3, passed: true, duration: 123 },
-                            test3: { retries: 4, passed: true, duration: 123 },
+                            test1: { failures: 2, runs: 3, passed: true, duration: 123 },
+                            test2: { failures: 3, runs: 4, passed: true, duration: 456 },
+                            test3: { failures: 4, runs: 5, passed: true, duration: 123 },
                         }
-                    })
+                    } as SuiteResults)
                 },
                 './.test-protractor-smartrunner/123456.bak.json': JSON.stringify({
                     suite1: {
-                        test1: { retries: 2, passed: false, duration: 123 },
-                        test2: { retries: 1, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 },
+                        test2: { failures: 1, runs: 1, passed: false, duration: 123 }
                     },
                     suite2: {
-                        test1: { retries: 2, passed: false, duration: 123 },
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 },
                     },
                     suite3: {
-                        test1: { retries: 2, passed: true, duration: 123 },
-                        test2: { retries: 3, passed: false, duration: 123 },
-                        test3: { retries: 3, passed: false, duration: 123 },
+                        test1: { failures: 2, runs: 3, passed: true, duration: 123 },
+                        test2: { failures: 3, runs: 3, passed: false, duration: 123 },
+                        test3: { failures: 3, runs: 3, passed: false, duration: 123 },
                     }
-                })
+                } as SuiteResults)
             });
 
             expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({
                 suite1: {
-                    test1: { retries: 3, passed: true, duration: 123 },
-                    test2: { retries: 4, passed: false, duration: 123 }
+                    test1: { failures: 3, runs: 4, passed: true, duration: 123 },
+                    test2: { failures: 4, runs: 4, passed: false, duration: 123 }
                 },
                 suite2: {
-                    test1: { retries: 3, passed: true, duration: 123 }
+                    test1: { failures: 3, runs: 4, passed: true, duration: 123 }
                 },
                 suite3: {
-                    test3: { retries: 1, passed: true, duration: 123 },
+                    test2: { failures: 0, runs: 1, passed: true, duration: 456 },
+                    test3: { failures: 1, runs: 2, passed: true, duration: 123 },
                 }
-            });
+            } as SuiteResults);
         });
 
-        test('should return empty object if for the lastRun everything became passed without any extra failure (e.g. without retries increase)', () => {
+        test('should return the previously failed ones if for the lastRun they became passed (with only runs increased)', () => {
             mock({
                 './.test-protractor-smartrunner/123456': {
                     'file1.json': JSON.stringify({
                         suite1: {
-                            test1: { retries: 2, passed: true, duration: 123 },
-                            test2: { retries: 2, passed: true, duration: 123 }
+                            test1: { failures: 2, runs: 3, passed: true, duration: 123 },
+                            test2: { failures: 2, runs: 3, passed: true, duration: 123 }
                         }
-                    }),
+                    } as SuiteResults),
                     'file2.json': JSON.stringify({
                         suite2: {
-                            test1: { retries: 2, passed: true, duration: 123 }
+                            test1: { failures: 2, runs: 3, passed: true, duration: 123 }
                         }
-                    })
+                    } as SuiteResults)
                 },
                 './.test-protractor-smartrunner/123456.bak.json': JSON.stringify({
                     suite1: {
-                        test1: { retries: 2, passed: false, duration: 123 },
-                        test2: { retries: 2, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 },
+                        test2: { failures: 2, runs: 2, passed: false, duration: 123 }
                     },
                     suite2: {
-                        test1: { retries: 2, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 }
                     }
-                })
+                } as SuiteResults)
             });
 
-            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({});
+            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({
+                suite1: {
+                    test1: { failures: 0, runs: 1, passed: true, duration: 123 },
+                    test2: { failures: 0, runs: 1, passed: true, duration: 123 }
+                },
+                suite2: {
+                    test1: { failures: 0, runs: 1, passed: true, duration: 123 }
+                }
+            } as SuiteResults);
         });
 
         test('should return empty object the lastRun doesn\'t contain valid SuiteResults information', () => {
             mock({
-                './.test-protractor-smartrunner/123456': {},
+                './.test-protractor-smartrunner/123456': {} as SuiteResults,
                 './.test-protractor-smartrunner/123456.bak.json': JSON.stringify({
                     suite1: {
-                        test1: { retries: 2, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 }
                     },
                     suite2: {
-                        test1: { retries: 2, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 }
                     }
-                })
+                } as SuiteResults)
             });
 
-            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({});
+            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({} as SuiteResults);
         });
 
         test('should return empty object the lastRun doesn\'t contain valid SuiteResults information (v2)', () => {
             mock({
                 './.test-protractor-smartrunner/123456': {
-                    'file2.json': JSON.stringify({})
+                    'file2.json': JSON.stringify({} as SuiteResults)
                 },
                 './.test-protractor-smartrunner/123456.bak.json': JSON.stringify({
                     suite1: {
-                        test1: { retries: 2, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 }
                     },
                     suite2: {
-                        test1: { retries: 2, passed: false, duration: 123 }
+                        test1: { failures: 2, runs: 2, passed: false, duration: 123 }
                     }
-                })
+                } as SuiteResults)
             });
 
-            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({});
+            expect(calculateDiff('./.test-protractor-smartrunner/123456')).toEqual({} as SuiteResults);
         });
     });
 });

@@ -1,6 +1,7 @@
 import { Logger } from 'protractor/built/logger';
 import { isCliGrepped, getExclusionGrep, getExclusions, getResultsOutputPath } from './helpers';
 import { SmartRunnerOptions, SmartRunner } from './smartrunner';
+import { ERROR_CODES } from './common.interfaces';
 const fs = require('fs-extra');
 
 const LOGGER_ID = 'smartrunner';
@@ -28,7 +29,7 @@ export class SmartRunnerFactory {
             const exclusionFileExists = fs.existsSync(this.options.exclusionPath);
             if (!exclusionFileExists) {
                 this.logger.error(`🔴 Exclusion file doesn't exist: ${this.options.exclusionPath}`);
-                process.exit(564);
+                process.exit(ERROR_CODES.NON_EXISTENT_EXCLUSION_FILE);
             }
 
             const exclusions = getExclusions(this.options.exclusionPath);

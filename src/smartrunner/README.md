@@ -30,11 +30,13 @@ Every `passed` or `failed` test **(no pending or disabled!)** has the following 
 {
     "suite-name": {
         "test-name": {
-            // Number of test retries before is has passed, if passed at all
-            "retries": 0,
-            // Whether it has passed or not
+            // Number of test failures before is has passed, if passed at all
+            "failures": 0,
+            // Number of total test runs
+            "runs": 0,
+            // Whether it has passed or not. Once it is set to true, the test won't be run for the given changeset
             "passed": true,
-            // In case if it is passed, what was the duration of the last (successful) execution
+            // Duration in miliseconds of the last execution (whether it was passed or failed)
             "duration": 399 
         },
         ...

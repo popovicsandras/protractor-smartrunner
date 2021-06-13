@@ -23,7 +23,7 @@
     "chalk": "^4.1.0",
     "filenamify": "^4.2.0",
     "fs-extra": "^8.1.0",
-    "tslib": "^2.0.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1100.7",

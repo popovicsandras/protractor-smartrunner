@@ -20,7 +20,7 @@
     "chromeDriver": "78.0.3904.70"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "filenamify": "^4.2.0",
     "fs-extra": "^8.1.0",
     "tslib": "^2.0.0"
